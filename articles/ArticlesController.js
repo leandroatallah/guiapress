@@ -83,4 +83,30 @@ router.post('/articles/delete', (req, res) => {
   }
 })
 
+router.get('/articles/page/:page', (req, res) => {
+  const page = parseInt(req.params.page)
+  const limit = 4
+  const offset = limit * page - limit
+
+  Article.findAndCountAll({
+    limit,
+    offset,
+    order: [['id', 'desc']],
+  }).then((articles) => {
+    const next = !  (offset + limit >= articles.count)
+    const result = {
+      articles,
+      next,
+      page,
+    }
+
+    Category.findAll().then((categories) => {
+      res.render('admin/articles/page', {
+        result,
+        categories
+      })
+    })
+  })
+})
+
 module.exports = router;
