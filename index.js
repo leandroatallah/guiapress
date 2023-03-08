@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const connection = require('./database/database');
 
@@ -15,6 +16,14 @@ const app = new express();
 
 // View engine
 app.set('view engine', 'ejs');
+
+// Sessions
+app.use(session({
+  secret: process.env.EXPRESS_SESSION_SECRET,
+  cookie: {
+    maxAge: 30000
+  }
+}))
 
 // Static
 app.use(express.static('public'));
